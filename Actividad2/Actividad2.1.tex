@@ -1,0 +1,159 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[spanish]{babel}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm]{geometry}
+\renewcommand{\baselinestretch}{1.5}
+\usepackage[utf8]{inputenc}
+\begin{document}
+
+\begin{titlepage}
+	\centering
+	\includegraphics[width=0.35\textwidth]{Unisonlogo}\par
+    \vspace{1cm}
+	\scshape \LARGE Universidad De Sonora \par
+	\vspace{1cm}
+	\scshape \Large Licenciatura en Física\par
+    \scshape \Large Física Computacional I \par
+	\vspace{1.5cm}
+	\huge \scshape Utilizando Emacs para Obtener y Aglomerar Datos\par
+	\vspace{2cm}
+	\Large Alexis Andrey Martínez Padilla\par
+    \vspace{1cm}
+    \Large Profesor Carlos Lízarraga Celaya\par
+    \vspace{1cm}
+    \Large 8 de Febrero del 2017
+\end{titlepage}
+
+\section{Breve Resumen}
+    Utilizando el programa Emacs, y un par de scripts dados, descargaremos y editaremos un conjunto de datos en texto que abarca todo un año. Se trata de toda la información recibida a una estación meteorológica en Yuma, Arizona. Otro resultado que queremos es gráficar altitud contra temperatura del día 7 de Febrero del 2017 de esa misma base.
+
+\section{Introducción}
+El editor de texto Emacs (Editor MACroS) fue escrito en 1975 por Richard Stallman junto con Guy Steele. Con éste gran editor de textos se pueden escribir scrpits en una larga variedad de lenguajes; en nuestro caso lo haremos en bash. Los scripts tendrán terminación .sh y serán ejecutados desde una terminal de Linux. \\
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=90mm]{emacs}
+\caption{GNU Emacs 22.0.91.1\label{overflow}}
+\end{figure}
+
+Todo esto con el propósito de darnos una pequeña introducción a lo que es Emacs y sus utilidades. Siendo así al terminar tendremos un archivo con muchos datos filtrados que usaremos después para una mayor manipulación de datos con ayuda del lenguaje Python.
+
+\newpage
+
+\section{Gráficando con GNUplot}
+
+Utilizando los datos de la Universidad de Wyoming, Estados Unidos [1], del día 7 de Febrero del 2017 a las 12Z horas [2] filtraremos solo la segunda y tercera fila que son las que nos dan altura y temperatura. Con gnuplot, ejecutado desde una terminal, insertaremos los siguientes comandos: \\
+
+\begin{verbatim}
+gnuplot
+set xlabel "Temperatura"
+set ylabel "Altura"
+plot "07022017.txt" using 2:1 title "" with lines
+\end{verbatim}
+La primera línea es para correr gnuplot, las segunda y tercera son para ponerle nombre a los ejes. El últim renglón es para gráficar nuestro archivo de texto con las dos filas de información y tomando en cuenta la segunda contra la primera; aparte sin título y trazada por una línea. \\
+Como resultado tenemos la siguiente gráfica:  \\
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=120mm]{p22}
+\caption{Gráfica de altura contra temperatura. \label{overflow}}
+\end{figure}
+
+\newpage
+
+\section{Obteniendo y Aglomerando Datos}
+Utilizando el primer script decargué la información de todo un año, día por día, de una serie de mediciónes hechas por la Universidad de Wyoming sobre Yuma, Arizona. \\
+Para ejecutar dicho script, abí una terminar y ejecuté los siguientes comandos: \\
+\begin{verbatim}
+chmod 755 script1.sh
+./script1.sh
+\end{verbatim}
+La primera columna me hizo posible abrir el archivo deseado cambiando los permisos. La segunda lo ejecuta. \\
+
+Obtuve 12 archivos, uno para cada mes del 2016 \\
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=100mm]{p24}
+\caption{Terminal ejecutando script1.sh \label{overflow}}
+\end{figure}
+
+Para aglomerar los datos en un solo archivo de texto, abrí una terminal e introduje el siguiente comando: \\
+
+\begin{verbatim}
+cat sounding* > soundings2016.txt
+\end{verbatim}
+ Esto provocó que toda la información dentro de los archivos "sounding" se juntara y tuviera un archivo de salida. Ahora "soundings2016.txt" fue creado y tiene la informacián de todo el año. \\
+
+Por ultimo, utilicé el segundo script para eliminar la información no deseada dentro del archivo soundings2016.txt. De mismo modo que con el primer script: \\
+\begin{verbatim}
+chmod 755 script2.sh
+./script2.sh
+\end{verbatim}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=100mm]{p23}
+\caption{Todos los archivos utilizados para ésta sección. \label{overflow}}
+\end{figure}
+
+El archivo creado (df2016.csv) contiene la información filtrada que consiste en el nombre de la estación analizada junto con diversos datos relaciónados con las propiedades de la atmósfera. Todo esto en conjunto está separado por hora y fecha en la que se hizo la medición. \\
+
+\newpage
+
+\section{Anexos}
+
+\begin{centering}
+Primer Script \\
+Script1.sh \\
+\end{centering}
+\begin{verbatim}
+IFS=":"
+LISTM31="01:03:05:07:08:10:12"
+LISTM30="04:06:09:11"
+LISTM29="02"
+# Script para bajar info por mes. Año 2016, dentro del URL:  YEAR=2015
+# Months 31 days
+for i in $LISTM31 ; do
+    wget "http://weather.uwyo.edu/cgi-bin/sounding?region= 
+    naconf&TYPE=TEXT%3ALIST&YEAR=2016&MONTH=$i&FROM=0100&TO=3112&STNM=74004"
+       /bin/sleep 1
+done
+# Months 30 days
+for i in $LISTM30 ; do
+    wget "http://weather.uwyo.edu/cgi-bin/sounding?region=
+    naconf&TYPE=TEXT%3ALIST&YEAR=2016&MONTH=$i&FROM=0100&TO=3012&STNM=74004"
+       /bin/sleep 1
+done
+# Feb. 29 days
+for i in $LISTM29 ; do
+    wget "http://weather.uwyo.edu/cgi-bin/sounding?region=
+    naconf&TYPE=TEXT%3ALIST&YEAR=2016&MONTH=$i&FROM=0100&TO=2812&STNM=74004"
+       /bin/sleep 1
+done
+\end{verbatim}
+
+\begin{centering}
+Segundo Script \\
+Script2.sh \\
+\end{centering}
+\begin{verbatim}
+egrep -v 'PRES|hPa' soundings2016.txt | egrep 
+'74004|Show|LIFT|SWEAT|K|Totals|virtual|CAPV|Lifted|thickness|Precip' > df2016.csv
+\end{verbatim}
+
+\section{Bibliografía}
+\begin{enumerate}
+\item http://weather.uwyo.edu/upperair/sounding.html \\
+\item http://weather.uwyo.edu/cgi-bin/sounding?region=naconf\&TYPE=TEXT\%3ALIST\&YEAR=2017  \&MONTH=02\&FROM=0212\&TO=0212\&STNM=74004 \\
+\item https://es.wikipedia.org/wiki/Emacs
+\end{enumerate}
+
+
+
+
+
+\end{document}
