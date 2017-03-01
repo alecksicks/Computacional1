@@ -1,0 +1,161 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[spanish]{babel}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm]{geometry}
+\renewcommand{\baselinestretch}{1.5}
+\usepackage[utf8]{inputenc}
+\begin{document}
+
+\begin{titlepage}
+	\centering
+	\includegraphics[width=0.45\textwidth]{Unisonlogo}\par
+    \vspace{1.3cm}
+	\scshape \LARGE Universidad De Sonora \par
+	\vspace{1cm}
+	\scshape \Large Licenciatura en Física\par
+    \scshape \Large Física Computacional I \par
+	\vspace{1.5cm}
+	\huge \scshape Iniciándose en Python\par
+	\vspace{2cm}
+	\Large Alexis Andrey Martínez Padilla\par
+    \Large Profesor Carlos Lízarraga Celaya\par
+    \vspace{2.5cm}
+    \Large 28 de Febrero del 2017
+\end{titlepage}
+
+\section{Breve Resumen}
+En esta actividad utilizamos el lenguaje de programación Python para llevar a cabo un análisis de una archivo de texto que contiene información de sondeos climáticos. Dichos sondeos se llevaron a cabo en Yuma, Arizona en el 2016.
+
+\section{Introducción}
+Python es un lenguaje de programación interpretado y orientado a objetos desarrollado por Guido van Rossum y publicado en 1991.
+
+\begin{center}
+\includegraphics[scale=0.5]{a3logo}
+\end{center}
+
+La filosofía de este lenguaje esta sumarizáda como: \\
+Lo hermoso es mejor que lo feo. \\
+Lo explícito es mejor que lo implícito. \\
+Lo simple es mejor que lo complejo. \\
+Complejo es mejor que complicado. \\
+Lo legible cuenta. \\
+
+Todo esto se debe a que es muy fácil para los principiantes, contiene un gran número de librerías incluídas, es rápido, y puedes experimentar inmediatamente. \\
+
+\newpage
+
+\section{Desarrollo}
+
+\subsection{Preparación de datos}
+
+Para obtener nuestros datos relevantes utilicé un script parecido al de la actividad anterior, que solo nos da la fecha, CAPE y PW.
+
+\begin{verbatim}
+egrep -v 'PRES|hPa' soundings2016.txt | egrep 'Observations|CAPE|Precip' > Yuma.csv
+\end{verbatim}
+
+Después utilizando query-replace en Emacs logré filtrar la información necesaria, o sea, solo la fecha y los números, todo separado por comas. Y para filtrar solo los renglones con 12Z usamos:
+
+\begin{verbatim}
+cat Yuma.csv | sed -e '/00Z/,d' > Yuma12Z.csv
+\end{verbatim}
+
+Y listo, omití el archivo para 00Z porque habían muy pocos días con esta hora.
+
+\subsection{Análisis de datos}
+
+Ahora abriendo un notebook de jupyter se importaron algunas librerías necesarias.
+
+\begin{verbatim}
+import pandas as pd
+import numpy as np
+import matplotlib as plt
+\end{verbatim}
+
+Despúes se leyó el archivo Yuma12Z.csv y se le asignaron nombres a sus tres columnas.
+\begin{verbatim}
+df = pd.read_csv("Yuma12Z.csv", names=['Fecha','CAPE', 'PW'])
+\end{verbatim}
+
+Los siguientes comandos nos mostraron los primeros 10 renglones de nuestro archivo en una forma de tabla, junto con una descripción general. Empieza con Marzo ya que ni en Enero ni Febrero hay sondeos a las 12Z horas.
+
+\begin{verbatim}
+df.head(10)
+df.describe()
+\end{verbatim}
+
+\begin{center}
+\includegraphics[scale=0.75]{a3tablas}
+\end{center}
+
+Ahora, todos los datos nulos se limpiaron, y se compararon con los datos anteriores, sin embargo, no hubo cambios.
+\begin{verbatim}
+df.apply(lambda x: sum(x.isnull()),axis=0)
+df_clean = df.dropna()
+df_clean.describe()
+\end{verbatim}
+
+Con la siguiente linea, dirán los nombres de las columnas de nuevo, las cuales fueron Fecha, CAPE y PW.
+\begin{verbatim}
+df.columns
+\end{verbatim}
+
+Con la siguiente entrada nos darán un histograma general de CAPE.
+
+\begin{verbatim}
+df_clean['CAPE'].hist(bins=100)
+\end{verbatim}
+
+\begin{center}
+\includegraphics[scale=0.75]{a3cape1}
+\end{center}
+
+Luego se presentó un diagrama de cajas.
+
+\begin{verbatim}
+df.boxplot(column=u'CAPE')
+\end{verbatim}
+
+\begin{center}
+\includegraphics[scale=0.75]{a3cape2}
+\end{center}
+
+Ahora se repitieron los pasos para PW, justo como en CAPE.
+
+\begin{verbatim}
+df_clean['PW'].hist(bins=100)
+\end{verbatim}
+
+\begin{center}
+\includegraphics[scale=0.75]{a3pw1}
+\end{center}
+
+\begin{verbatim}
+df.boxplot(column=u'PW')
+\end{verbatim}
+
+\begin{center}
+\includegraphics[scale=0.75]{a3pw2}
+\end{center}
+
+Desafortunadamente no se pudieron representar por mes, el comando no funcionó ya que no habían datos de Enero ni Febrero como se mencionó anteriormente.
+
+\newpage
+
+\section{Bibliografía}
+
+\begin{enumerate}
+
+\item  Carlos Lizárraga Celaya; Universidad de Sonora, Departamente de Física. \\ http://computacional1.pbworks.com/w/page/115266988/Actividad20320(2017-1)
+
+\item University of Wyoming; Department of Atmospheric Science. \\
+http://weather.uwyo.edu/upperair/sounding.html
+
+\item https://en.wikipedia.org/wiki/Python\_(programming\_language)
+
+\end{enumerate}
+
+\end{document}
