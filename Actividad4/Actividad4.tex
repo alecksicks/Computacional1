@@ -1,0 +1,197 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[spanish]{babel}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{gensymb}
+\usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm]{geometry}
+\renewcommand{\baselinestretch}{1.5}
+\usepackage[utf8]{inputenc}
+\begin{document}
+
+\begin{titlepage}
+	\centering
+	\includegraphics[width=0.45\textwidth]{Unisonlogo}\par
+    \vspace{1.3cm}
+	\scshape \LARGE Universidad De Sonora \par
+	\vspace{1cm}
+	\scshape \Large Licenciatura en Física\par
+    \scshape \Large Física Computacional I \par
+	\vspace{1.5cm}
+	\huge \scshape Gráficando en Python\par
+	\vspace{2cm}
+	\Large Alexis Andrey Martínez Padilla\par
+    \Large Profesor Carlos Lízarraga Celaya\par
+    \vspace{2.5cm}
+    \Large 1 de Marzo del 2017
+\end{titlepage}
+
+\section{Breve Resumen}
+En esta actividad se usará python de nuevo, primero se graficará sencillamente usando matplotlib, despues emplearemos una librería que tiene que ser instalada para poder realizar un tefigrama de un sondeo hecho por la Universidad de Wyoming.
+
+\section{Introducción}
+Un tefigrama es un representación de algunas caractéristicas termodinámicas, en este caso, de la atmósfera. Este esquema fue inventado por Napier Shaw en 1915 para el uso en Reino Unido y Canadá.
+
+\begin{center}
+\includegraphics[scale=0.55]{a4intro}
+\end{center}
+
+En los tefigramas se pueden visualizar lineas isotérmicas, isobáricas y adiabáticas, que son las que generalmente nos confunden; también se aprecian las temperaturas de ambiente y de rocío, y por ultimo la presión que se encuentra en el eje y. Algunas también presentan las direcciones del viento.
+
+\newpage
+
+\section{Desarrollo}
+
+\subsection{Matplotlib Básico}
+
+Como siempre en python, comencé integrando algunas librerías.
+
+\begin{verbatim}
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as mplt
+import pylab as plt
+from matplotlib import rc
+from pylab import figure, show, legend, xlabel, ylabel
+\end{verbatim}
+
+Se abrió mi archivo basado en un sondeo del 12 de Febrero del 2017 cual solo contiene cuatro columnas y fueron nombradas.
+
+\begin{verbatim}
+df = pd.read_csv("Datos.csv")
+df.columns= ['Pres','Altura','Temp','DWPT']
+\end{verbatim}
+
+Ahora empecé a definir que columnas se usaran para los ejes, luego nombre de los ejes y en que orden. En este caso será la Altura vs Presión.
+
+\begin{verbatim}
+y=df[u'Altura']
+x=df[u'Pres']
+plt.ylabel('Altura (m)')
+plt.xlabel('Presión (hPa)')
+mplt.plot(x,y)
+mplt.grid(True)
+plt.show()
+\end{verbatim}
+
+\begin{center}
+\includegraphics[scale=0.75]{a4alturavsps}
+\end{center}
+
+De la misma manera, solo que ahora será Altura vs Temperatura.
+
+\begin{verbatim}
+y=df[u'Altura']
+x=df[u'Temp']
+plt.ylabel('Altura (m)')
+plt.xlabel('Temperatura (C)')
+mplt.plot(x,y)
+mplt.grid(True)
+plt.show()
+\end{verbatim}
+
+\begin{center}
+\includegraphics[scale=1.0]{a4alturavstemp}
+\end{center}
+
+Ahora toca Altura vs Temperatura de rocío.
+
+\begin{verbatim}
+y=df[u'Altura']
+x=df[u'DWPT']
+plt.ylabel('Altura (m)')
+plt.xlabel('DWPT (C)')
+mplt.plot(x,y)
+mplt.grid(True)
+plt.show()
+\end{verbatim}
+
+\begin{center}
+\includegraphics[scale=1]{a4alturavsdwpt}
+\end{center}
+
+\begin{verbatim}
+y=df[u'Altura']
+x=df[u'Temp']
+plt.ylabel('Altura (m)')
+plt.xlabel('Temperatura (C)')
+mplt.plot(x,y)
+mplt.grid(True)
+
+y=df[u'Altura']
+x=df[u'DWPT']
+plt.ylabel('Altura (m)')
+plt.xlabel('Temperatura (C)')
+mplt.plot(x,y)
+mplt.grid(True)
+
+plt.show()
+\end{verbatim}
+
+\begin{center}
+\includegraphics[scale=1]{a4alturavsdual}
+\end{center}
+
+Por último se cargaron las gráficas de Altura vs Temperatura y Altura vs Temperatura de rocío, se dio una gráfica que muestra ambas al mismo tiempo.
+
+\newpage
+
+\subsection{Realizando el Tefigrama}
+
+Después de crear un Fork en mi carpeta de Github, cloné los archivos necesarios para instalar la librería tephi en python. Para instalarlos utilicé en la terminal:
+
+\begin{verbatim}
+pip install --upgrade pip --user Desktop/Physics/Fcomputacional/tephi
+\end{verbatim}
+
+Ahora abriendo una notebook empecé por importar algunas librerias, la última es la que se acaba de instalar.
+
+\begin{verbatim}
+import pandas as pd
+import matplotlib.pyplot as mplt
+import pylab as plt
+import os.path
+import tephi as tph
+\end{verbatim}
+
+Luego definí algunas variables que se graficaran; estas están basadas en nuevos archivos csv que contienen dos columnas cada una, un archivo con presión y temperatura, y el otro con presión y temperatura de rocío.
+
+\begin{verbatim}
+dew_point = pd.read_csv("presDWPT.csv", names=["Presión", "DWPT"])
+dry_bulb = pd.read_csv("presTEMP.csv", names=["Presión", "Temperatura"])
+tpg = tph.Tephigram()
+tpg.plot(dew_point)
+tpg.plot(dry_bulb)
+plt.show()
+\end{verbatim}
+
+\begin{center}
+\includegraphics[scale=0.75]{a4tephi}
+\end{center}
+
+\begin{center}
+¡Ahora tenemos un tefigrama!
+\end{center}
+
+\newpage
+
+\section{Bibliografía}
+\begin{enumerate}
+
+\item  Carlos Lizárraga Celaya; Universidad de Sonora, Departamente de Física. \\ http://computacional1.pbworks.com/w/page/115478932/Actividad\%204\%20(2017-1)
+
+\item University of Wyoming; Department of Atmospheric Science. \\
+http://weather.uwyo.edu/upperair/sounding.html
+
+\item https://www.datacamp.com/community/blog/python-matplotlib-cheat-sheet\#gs.7gk5NnQ
+
+\item https://pip.pypa.io/en/stable/reference/pip\_install/
+
+\item https://en.wikipedia.org/wiki/Tephigram
+
+\end{enumerate}
+
+\end{document}
+
+Perdón
