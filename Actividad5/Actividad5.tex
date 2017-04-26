@@ -1,0 +1,162 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[spanish]{babel}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{gensymb}
+\usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm]{geometry}
+\renewcommand{\baselinestretch}{1.5}
+\usepackage[utf8]{inputenc}
+\begin{document}
+
+\begin{titlepage}
+	\centering
+	\includegraphics[width=0.45\textwidth]{Unisonlogo}\par
+    \vspace{1.3cm}
+	\scshape \LARGE Universidad De Sonora \par
+	\vspace{1cm}
+	\scshape \Large Licenciatura en Física \par
+    \scshape \Large Física Computacional I \par
+	\vspace{1.5cm}
+	\huge \scshape Comprotamiento de Mareas \par
+	\vspace{2cm}
+	\Large Alexis Andrey Martínez Padilla\par
+    \Large Profesor Carlos Lízarraga Celaya\par
+    \vspace{2.5cm}
+    \Large 26 de Abril del 2017
+\end{titlepage}
+
+\section{Breve Resumen}
+En esta actividad nos introduciremos al analísis de las mareas. Primero que nada será entender su definición, sus tipos y sus diferentes características. Despúes utilizando una Notebook de Python se hará un pequeño analisis de dos costas mostrando su comportamiento de mareas en un mes.
+
+\section{Introducción}
+Las mareas son un fenómeno producido por diferentes factores físicos o natural, entre ellos puede llegar a ser la misma rotacián de la Tierra, los efectos gravitacionales de la Luna, el Sol, etc. Estos fenómenos crean un descenso y ascenso del nivel del mar, al que se le conoce como marea.
+
+\begin{center}
+\includegraphics[scale=0.65]{a51}
+\end{center}
+
+\section{Teoría de Mareas}
+Las mareas tienen un comportamiento ondulatorio, tiene su amplitud (Diferencias entre picos y valles de agua), tiene distintos periodos que dependen de la hora y la fecha.
+
+La diferencia de altura entre aguas altas y bajas varía en un ciclo de dos semanas, y es cuando el Sol, la Luna y la Tierra se alinean; por otro lado el mínimo nivel del mar se produce cuando el ángulo entre la Luna y el Sol es perpendicular (Se le conoce marea NEAP)
+
+Así mismo la altitud de la Luna ejerce directamente un cambio en el nivel marino. Cuando la Luna se encuentra más cerca a la Tierra el nivel aumenta, y cuando se encuentra más lejos, disminuye. A estos procesos se les conoce como Perigeo y Apogeo respectivamente. \\
+
+\newpage
+
+\section{Constituyentes de Mareas}
+
+\begin{table}[!h]
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline 
+%\multicolumn{7}{|c|}{Mediciones} \\ hline
+\multicolumn{1}{|c|}{Número} & \multicolumn{1}{|c|}{Nombre} & \multicolumn{1}{|c|}{Símbolo} & \multicolumn{1}{c|}{Periodo (hr)} \\ 
+\hline
+1 & Principal lunar semidiurno &  $M_{2}$ & 12.42 \\ \hline
+2&  Principal solar semidiurno & $S_{2}$ & 12.00 \\ \hline
+3&  Lunar elítpico semidiurno & $N_{2}$ & 12.66 \\ \hline
+4&  Lunar diurno & $K_{1}$ & 23.93 \\ \hline
+5& Aguas poco profundas de principal lunar & $M_{4}$ & 6.21 \\ \hline
+6&  Lunar diurno & $O_{1}$ & 25.82 \\ \hline
+7& Aguas poco profundas de principal lunar & $M_{6}$ & 4.14 \\ \hline
+8& Aguas poco profundas terdiurno & $MK_{3}$ & 8.18 \\ \hline
+9& Aguas poco profundas de principal solar & $S_{4}$ & 6.00 \\ \hline
+10& Aguas poco profundas cuarto diurno & $MN_{4}$ & 6.27 \\ \hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\section{Resultados}
+
+\subsection{CICESE: Progreso, Yucatán.}
+
+\begin{verbatim}
+import pandas as pd
+import matplotlib.pylab as plt
+from datetime import datetime
+import numpy as np
+
+df = pd.read_csv("Progreso.csv", names = ("Anio", "Mes", "dia", "Hora", "Altura" ), header = 0)
+df.head()
+
+df.apply(lambda x: sum(x.isnull()),axis=0)
+
+df_cl = df.dropna()
+df_cl.Altura = pd.to_numeric(df_cl.Altura, errors='coerce')
+
+df_cl['date']= df.apply(lambda x:datetime.strptime("{0} {1} {2} {3}".format(x[u'Anio'],x[u'Mes'], x[u'dia'], x[u'Hora']), "%Y %m %d %H"),axis=1)
+
+y= df_cl['Altura']
+
+plt.plot(df_cl['date'], y, label ="Altura")
+plt.xlim(pd.Timestamp('2016-01-01 00:00:00'), pd.Timestamp('2016-01-31 23:00:00')) 
+plt.ylabel('Altura de marea [mm]')
+plt.xlabel('Fecha')
+plt.title('Nivel de Marea en Progreso, Yucatán, Enero 2016')
+plt.grid(True) 
+
+plt.plot(x,y)
+plt.show()
+\end{verbatim}
+
+\begin{center}
+\includegraphics[scale=0.65]{a52}
+\end{center}
+
+\subsection{NOAA: Fort Point, New Hampshire}
+
+\begin{verbatim}
+import pandas as pd
+import matplotlib.pylab as plt
+from datetime import datetime
+import numpy as np
+
+df = pd.read_csv("FortPoint.csv", names = ("Date Time", "Water Level", "Sigma", "O", "F", "R", "L", "Quality"), header = 0)
+df.head()
+
+df['Date'] = pd.to_datetime(df["Date Time"], format = '%Y %m %d %H:%M:')
+
+df.apply(lambda x: sum(x.isnull()),axis=0)
+
+x= df['Date']
+y= df['Water Level']
+
+tides = plt.plot(df[u'Date'], df[u'Water Level'], 'g', label ="Altura")
+plt.xlim(pd.Timestamp('2016-03-27 00:00:00'), pd.Timestamp('2016-04-26 23:59:00'))
+plt.ylabel('Altura de marea [m]')
+plt.xlabel('Fecha')
+plt.title('Nivel de Marea en Fort Point, New Hampshire, desde Marzo 2016 hasta Abril 2016')
+plt.grid(True)
+
+plt.plot(x,y)
+plt.show()
+\end{verbatim}
+
+\begin{center}
+\includegraphics[scale=0.65]{a53}
+\end{center}
+
+\newpage
+
+\section{Bibliografía}
+
+\begin{enumerate}
+
+\item  Carlos Lizárraga Celaya; Universidad de Sonora, Departamento de Física. \\ http://computacional1.pbworks.com/w/page/115478932/Actividad\%204\%20(2017-1)
+\item https://en.wikipedia.org/wiki/Tide
+
+\item https://en.wikipedia.org/wiki/Theory\_of\_tides
+
+\item http://predmar.cicese.mx/calendarios/
+
+\item https://tidesandcurrents.noaa.gov/stations.html?type=Water+Levels
+
+\item http://www.tablademareas.com/mx
+
+\end{enumerate}
+
+\end{document}
+
