@@ -1,0 +1,64 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[spanish]{babel}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{gensymb}
+\usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm]{geometry}
+\renewcommand{\baselinestretch}{1.5}
+\usepackage[utf8]{inputenc}
+\begin{document}
+
+\begin{titlepage}
+	\centering
+	\includegraphics[width=0.45\textwidth]{Unisonlogo}\par
+    \vspace{1.3cm}
+	\scshape \LARGE Universidad De Sonora \par
+	\vspace{1cm}
+	\scshape \Large Licenciatura en Física \par
+    \scshape \Large Física Computacional I \par
+	\vspace{1.5cm}
+	\huge \scshape Evaluación 2 \par
+	\vspace{2cm}
+	\Large Alexis Andrey Martínez Padilla\par
+    \Large Profesor Carlos Lízarraga Celaya\par
+    \vspace{2.5cm}
+    \Large 26 de Abril del 2017
+\end{titlepage}
+
+\section{Mostrando la gráfica}
+
+De los datos proporcionados, utiliza una transformada discreta de Fourier, para encontrar la frecuencia del ciclo principal. Muestra una gráfica con los principales modos encontrados. \\ 
+
+\includegraphics[width=0.85\textwidth]{ev2g}
+
+\section{Frequencias}
+
+¿Encuentras un solo ciclo principal o un conjunto de ciclos con frecuencia cercana? ¿Cuál sería el promedio del conjunto de frecuencias? \\
+
+Se encontraron ciclos de frequencia cercana, y el promedio me dió alrededor de 10.57. Cabe mencionar que el promedio esperado debió de haber sido aproximadamente 11.2, sin embargo, solo tomé tres muestras. Y por último, se dió a entender que los ciclos solares no son periódicos.
+
+\section{Otros Datos}
+Que otros ciclos relevantes encuentras? Proporciona una tabla con las amplitudes de los ciclos. \\
+
+\begin{table}[b!]
+\centering
+\label{my-label}
+\begin{tabular}{|c|c|c|c|}
+\hline
+Armónico & Núm de manchas & Frequencia & Periodo (Años) \\ \hline
+Primero  & 20             & 0.0074696  & 11.08          \\ \hline
+Segundo  & 17.71          & 0.007780   & 10.71          \\ \hline
+Tercero  & 15.45          & 0.008403   & 9.92           \\ \hline
+\end{tabular}
+\end{table}
+
+
+\section{Por último}
+
+Lo que han encontrado hasta ahora son ciertas regularidades, incluso hay pronósticos de un rango para el número de manchas solares. ¿Cómo crees que es posible predecir el número de manchas? \\
+
+Supongo que utilizando el mismo método, aplicando Fourier.
+
+\end{document}
