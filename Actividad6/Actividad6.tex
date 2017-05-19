@@ -1,0 +1,165 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[spanish]{babel}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{gensymb}
+\usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm]{geometry}
+\renewcommand{\baselinestretch}{1.5}
+\usepackage[utf8]{inputenc}
+\begin{document}
+
+\begin{titlepage}
+	\centering
+	\includegraphics[width=0.45\textwidth]{Unisonlogo}\par
+    \vspace{1.3cm}
+	\scshape \LARGE Universidad De Sonora \par
+	\vspace{1cm}
+	\scshape \Large Licenciatura en Física \par
+    \scshape \Large Física Computacional I \par
+	\vspace{1.5cm}
+	\huge \scshape Analísis de Mareas \par
+	\vspace{2cm}
+	\Large Alexis Andrey Martínez Padilla\par
+    \Large Profesor Carlos Lízarraga Celaya\par
+    \vspace{2.5cm}
+    \Large 19 de Mayo del 2017
+\end{titlepage}
+
+\section{Breve Resumen}
+
+Como continuación a la actividad anterior, ahora analizaremos la marea de Fort Point utilizando la transformada discreta de Fourier. Con ella llegaremos a algunos datos relevantes para el análisis de la amplitud, frequencia y periodo.
+
+\section{Introducción}
+
+\newpage
+
+\section{Resultados Obtenidos}
+
+\begin{center}
+\includegraphics[scale=0.50]{fp1}
+\end{center}
+
+\begin{table}[]
+\centering
+\label{my-label}
+\begin{tabular}{|c|c|c|c|}
+\hline
+Armónico & Periodo (hr)  & Frequencia (1/hr) & Amplitud (m)   \\ \hline
+Primero  & 126.101694915 & 0.00793010752688  & 0.226192493208 \\ \hline
+Segundo  & 124.0         & 0.00806451612903  & 0.6325385831   \\ \hline
+Tercero  & 120.0         & 0.00833333333333  & 0.127062666561 \\ \hline
+\end{tabular}
+\end{table}
+
+Y en la gráfica nos muestran los puntos dados:
+
+\begin{center}[b!]
+\includegraphics[scale=0.50]{fp2}
+\end{center}
+
+\newpage
+
+\section{Código empleado}
+
+\begin{verbatim}
+#Se importaron las librearías necesarias
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from pylab import *
+import scipy
+from scipy.fftpack import fft,fftfreq, fftshift
+
+#Se leyó el archivo separado en comas y se le asignaron nombre a las columnas
+df=pd.read_csv("FortPoint.csv",parse_dates=['Date Time'],header=int(0))
+df.columns=['Date Time','Water Level','Sigma','O','F','R','L','Quality']
+
+#Se utilizará solo el valor absoluto del nivel del agua, se observa el final del archivo para ver cuantos datos contiene
+df1=df.loc[abs(df['Water Level']) < 0.09]
+df.tail()
+
+#Ahora se aplica la función de la transformada de Fourier
+N_d = 7440
+T = 1.0
+y = df["Water Level"] 
+yf = fft(y)
+xf = fftfreq(N_d, T)
+xf = fftshift(xf)
+yplot = fftshift(yf)
+
+graf = plt.plot(xf, 2.0/N_d *abs(yplot))
+plt.xlim(-0.01,0.1)
+plt.grid(True)
+
+plt.xlabel('Frecuencia [1/hora]')
+plt.ylabel('Amplitud [m]')
+plt.title('Fort Point, New Hampshire')
+
+fig = plt.gcf()
+fig.set_size_inches(10, 5)
+plt.show()
+
+#Se buscan algunos máximos
+a= np.absolute(yf/7440)
+a[a[:,] > 0.05]
+
+print(np.where(a[:,]>0.1))
+b= a[a[:,]>0.05]
+b
+
+#Resulta ser que hay tres valores cercanos (59, 60 y 62), así que se usarán esos.
+#Ahora buscaremos la amplitud, frecuencia y periodo de esos puntos
+print( 'Primer Armónico notorio')
+print('Amplitud=',np.absolute(yf[59,]/7440))
+print('frecuencia=', xf[int(3720+59),])
+print('periodo=', 1/xf[int(3720+59),])
+
+print('Segundo Armónico notorio')
+print('Amplitud=',np.absolute(yf[60,]/7440))
+print('frecuencia=', xf[int(3720+60),])
+print('periodo=', 1/xf[int(3720+60),])
+
+print('Tercer Armónico notorio')
+print('Amplitud=',np.absolute(yf[62,]/7440))
+print('frecuencia=', xf[int(3720+62),])
+print('periodo=', 1/xf[int(3720+62),])
+
+#Por último se configura la gráfica y se muestra
+fig = plt.gcf()
+fig.set_size_inches(10, 5)
+
+
+graf = plt.plot(xf, 1.0/7440 *abs(yplot))
+plt.xlim(-0,0.01)
+plt.grid(True)
+
+plt.xlabel('Frecuencia [1/hora]')
+plt.ylabel('Amplitud [m]')
+plt.title('Fort Point, New Hampshire', fontsize=15)
+
+plt.text(0.00793010752688,0.226192493208, '$N_1$')
+plt.text(0.00806451612903,0.6325385831, '$N_2$')
+plt.text(0.00833333333333,0.127062666561, '$N_3$')
+
+
+plt.show()
+\end{verbatim}
+
+\section{Bibliografía}
+
+\begin{enumerate}
+
+\item  Carlos Lizárraga Celaya; Universidad de Sonora, Departamente de Física. \\ http://computacional1.pbworks.com/w/page/115478932/Actividad\%204\%20(2017-1)
+
+\item https://en.wikipedia.org/wiki/Discrete-time\_Fourier\_transform
+
+\item https://en.wikipedia.org/wiki/Fourier\_analysis
+
+\item https://docs.scipy.org/doc/scipy-0.18.1/reference/tutorial/fftpack.html
+
+\end{enumerate}
+
+\end{document}
+

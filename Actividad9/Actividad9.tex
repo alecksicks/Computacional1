@@ -1,0 +1,124 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[spanish]{babel}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{gensymb}
+\usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm]{geometry}
+\renewcommand{\baselinestretch}{1.5}
+\usepackage[utf8]{inputenc}
+\begin{document}
+
+\begin{titlepage}
+	\centering
+	\includegraphics[width=0.45\textwidth]{Unisonlogo}\par
+    \vspace{1.3cm}
+	\scshape \LARGE Universidad De Sonora \par
+	\vspace{1cm}
+	\scshape \Large Licenciatura en Física \par
+    \scshape \Large Física Computacional I \par
+	\vspace{1.5cm}
+	\huge \scshape Teoría del Caos \par
+	\vspace{2cm}
+	\Large Alexis Andrey Martínez Padilla\par
+    \Large Profesor Carlos Lízarraga Celaya\par
+    \vspace{2.5cm}
+    \Large 19 de Mayo del 2017
+\end{titlepage}
+
+\section{Breve Resumen}
+En ésta actividad se éxplíca en qué consiste la teoría del caos y como representarla gráficamente de tres maneras, utilizando distintos parametros y haciendo comparaciónes.
+
+\section{Teoría del Caos}
+La rama de las matemáticas que estudia los sistemas dinámicos muy sensibles a las condiciones iniciales se llama teoría del cáos. Para Lorenz, el caos es "Cuando el presente determina el futuro, pero la aproximación del presente no determina aproximadamente el futuro". Este tipo de comportamientos se pueden encontrar en muchas ramas de la ciencia, como la meteorología, sociología, ciencias de la computación, biología, economía, y una gran parte de la física. \\
+
+Dicho modelamiento está dado como:
+
+$$x_{n+1} = r x_n (1-x_n)$$
+
+Donde r se le conoce como "Tasa de crecimiento" y éste puede tomar valores entre 0 y 4. \\
+
+Dependiendo de éstos valores, el sistema puede comportarse de maneras muy diferentes: \\
+
+\begin{centering}
+$0 < r \leq 1$: La población terminará desapareciendo. \\
+$1 < r \leq 2$: La población irá tendiendo a $\frac{r-1}{r}$ \\
+$2 < r \leq 3$: La población se estabilizará en $\frac{r-1}{r}$, \\
+pero previamente va a fluctuar sobre ese valor. \\
+$3 < r \leq 4$: El comportamiento es muy variado. \\
+\end{centering}
+
+\subsection{Bifuraciónes}
+Una bifurcación se da cuando una pequeña variación dentro de los parámetros genera una cambio brusco en el sistema, ya sea dinámico o discreto. Son parte de la teoría del caós.
+
+\newpage
+
+\section{Mapeos Logísticos}
+Utilizando diferentes r(Tasas de crecimiento) y viéndolo muy generalizadamente tenemos la siguiente gráfica:
+
+\begin{center}
+\includegraphics[scale=0.50]{ml1}
+\end{center}
+
+Ahora si se hace una comparación de r=3.9 y una cienmilésima despúes tenemos como resultado:
+\begin{center}
+\includegraphics[scale=0.50]{ml2}
+\end{center}
+Se puede observar que el inicio fue esencialmente el mismo, pero surge una gran diferencia después. \\
+
+\newpage
+
+Ahora haciendo la misma comparación pero en 0.5:
+\begin{center}
+\includegraphics[scale=0.50]{ml3}
+\end{center}
+Hay un comportamiento similar, pero no muestra una diferencia tan exagerada.
+
+\section{Diagramas de Bifurcaciónes}
+
+\begin{center}
+\includegraphics[scale=0.50]{bift}
+\end{center}
+
+
+\newpage
+
+\section{Mapeo Logístico (Atractor)}
+
+Ahora con otro tipo de mapeo logístico.\\
+
+\begin{center}
+\includegraphics[scale=0.55]{mla}
+\end{center}
+
+Notamos como hay un gran cambio de 3.56 a 3.57.
+
+
+\section{Cáos Determinista vs. Aleatoriedad}
+
+\begin{center}
+\includegraphics[scale=0.50]{cvr}
+\end{center}
+
+Observamos que tienen algunas similaridades, el caos es increíblemente difícil de predecir, es casi tangencial a lo aleatorio.
+
+\section{Bibliografía}
+
+\begin{enumerate}
+
+\item http://geoffboeing.com/2015/03/chaos-theory-logistic-map/
+
+\item https://en.wikipedia.org/wiki/Chaos\_theory
+
+\item https://en.wikipedia.org/wiki/Bifurcation\_theory
+
+\item https://en.wikipedia.org/wiki/Logistic\_map
+
+\item  Carlos Lizárraga Celaya; Universidad de Sonora, Departamento de Física. \\ http://computacional1.pbworks.com/w/page/115478932/Actividad\%209\%20(2017-1)
+
+
+
+\end{enumerate}
+
+\end{document}

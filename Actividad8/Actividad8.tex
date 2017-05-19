@@ -1,0 +1,168 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[spanish]{babel}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm]{geometry}
+\renewcommand{\baselinestretch}{1.5}
+\usepackage[utf8]{inputenc}
+\begin{document}
+
+\begin{titlepage}
+	\centering
+	\includegraphics[width=0.45\textwidth]{Unisonlogo}\par
+    \vspace{1.3cm}
+	\scshape \LARGE Universidad De Sonora \par
+	\vspace{1cm}
+	\scshape \Large Licenciaturaen Física\par
+    \scshape \Large Física Computacional I \par
+	\vspace{1.5cm}
+	\huge \scshape Atractores Extraños\par
+	\vspace{2cm}
+	\Large Alexis Andrey Martínez Padilla\par
+    \Large Profesor Carlos Lízarraga Celaya\par
+    \vspace{2.5cm}
+    \Large 19 de Mayo del 2017
+\end{titlepage}
+
+\section{Breve Resumen}
+
+En ésta actividad se realizó a cabo un pequeña síntesis sobre el modelo de Lorenz para describir ciertas carácteristicas de la atmósfera. También con ayuda de Python se graficó dicha solución al sistema con condiciones iniciales normales en el espacio, y se observaron sus diferentes puntos de vista en tres planos.
+
+\section{Introducción}
+
+El sistema de Lorenz consiste de ecuaciónes diferenciales orifinarias primeramente estuadiadas por Edward Lorenz. Es notable ya que contiene soluciónes caóticas en ciertos parametros y condiciones iniciales. Al ser gráficado nos da una figura parecida a una mariposa. \\
+
+En 1963, Lorenz desarrolló un modelo matemático para la convección atmosférica; dichas ecuaciónes son las siguientes:
+
+\begin{centering}
+$$\frac{dx}{dt} = \sigma(y-x),$$
+$$\frac{dy}{dt} = x(\rho-z)-y,$$
+$$\frac{dz}{dt} = xy-\beta z.$$
+\end{centering}
+
+Donde x, y, z nos dan el sistema estado, t es el tiempo y $\sigma$, $\rho$, $\beta$ son los parámetros del sistema. \\
+
+Generalmente uno asuma que los valores de los parámetros son positivos. Lorenz utilizó $\sigma=10$, $\rho=28$ y $\beta=8/3$. El sistema exhibe un comportamiento caótico en estos valores e incluso en valores cercanos.
+
+\newpage
+
+\section{Gráficando el Atractor}
+
+Utilicé el código 1 para obtener la siguiente gráfica:
+\begin{center}
+\includegraphics[scale=0.5]{lorenzxyz}
+\end{center}
+
+Lo valores paramétricos fueron los mismos usados por Lorenz. \\
+
+Ahora utilizando los códigos 2.1, 2.2 y 2.3 visualizaremos el sistema en diferentes planos:
+
+\begin{center}
+\includegraphics[scale=0.8]{lorenz3}
+\end{center}
+
+\section{Códigos Empleados}
+
+\subsection{Código 1}
+
+De https://matplotlib.org/2.0.0/examples/mplot3d/lorenz\_attractor.html
+
+\begin{verbatim}
+# Se importan librerías
+import numpy as np
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+
+# Se definen variables
+def lorenz(x, y, z, s=10, r=28, b=2.667):
+    x_dot = s*(y - x)
+    y_dot = r*x - y - x*z
+    z_dot = x*y - b*z
+    return x_dot, y_dot, z_dot
+
+dt = 0.01
+stepCnt = 10000
+
+xs = np.empty((stepCnt + 1,))
+ys = np.empty((stepCnt + 1,))
+zs = np.empty((stepCnt + 1,))
+
+# Se dan condiciones iniciales
+xs[0], ys[0], zs[0] = (0., 1., 1.05)
+
+# Paso a travéz del tiempo
+for i in range(stepCnt):
+    # Derivatives of the X, Y, Z state
+    x_dot, y_dot, z_dot = lorenz(xs[i], ys[i], zs[i])
+    xs[i + 1] = xs[i] + (x_dot * dt)
+    ys[i + 1] = ys[i] + (y_dot * dt)
+    zs[i + 1] = zs[i] + (z_dot * dt)
+    
+# Se configura como será graficado    
+fig = plt.figure()
+ax = fig.gca(projection='3d')
+fig.set_size_inches(8, 8)
+ax.plot(xs, ys, zs, lw=0.5)
+ax.set_xlabel("Eje X")
+ax.set_ylabel("Eje Y")
+ax.set_zlabel("Eje Z")
+ax.set_title("Atractor de Lorenz")
+
+# Se muestra la gráfica en el espacio
+plt.show()
+\end{verbatim}
+
+\subsection{Código 2}
+(Continuación al código anterior)
+
+\subsubsection{2.1}
+\begin{verbatim}
+# Ahora para visualizarlo en tres planos distintos, en este caso el plano XY.
+
+plt.ylabel('Eje Y')
+plt.xlabel('Eje X')
+plt.title('Atractor de Lorenz en el plano XY')
+plt.grid(True)
+
+plt.plot(xs,ys,color='blue',lw=0.5)
+plt.show()
+\end{verbatim}
+
+\subsubsection{2.2}
+\begin{verbatim}
+# Ahora el eje XZ.
+plt.ylabel('Eje Z')
+plt.xlabel('Eje X')
+plt.title('Atractor de Lorenz en el plano XZ')
+plt.grid(True)
+
+plt.plot(xs,zs,color='red',lw=0.5)
+plt.show()
+\end{verbatim}
+
+\subsubsection{2.3}
+\begin{verbatim}
+# Finalmente el eje YZ.
+plt.ylabel('Eje Z')
+plt.xlabel('Eje Y')
+plt.title('Atractor de Lorenz en el plano YZ')
+plt.grid(True)
+
+plt.plot(ys,zs,color='green',lw=0.5)
+plt.show()
+\end{verbatim}
+
+
+\section{Bibliografía}
+
+\begin{enumerate}
+\item http://computacional1.pbworks.com/w/page/117689967/Actividad%208%20(2017-1)
+
+\item https://en.wikipedia.org/wiki/Lorenz\_system
+
+\item https://matplotlib.org/2.0.0/examples/mplot3d/lorenz\_attractor.html
+
+\end{enumerate}
+\end{document}
